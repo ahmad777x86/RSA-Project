@@ -1,5 +1,6 @@
 // rsa.h
 #pragma once
+#include <stack>
 #include <string>
 #include <stdexcept>
 typedef unsigned long long uint64; // 64 bits: 0 to about 1.8 x 10^19

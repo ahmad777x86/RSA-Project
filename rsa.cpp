@@ -37,10 +37,57 @@ uint64 mod_exp(uint64 b, uint64 n, uint64 m) // B1
 	return x;
 }
 
-uint64 gcd(uint64 a, uint64 b); // B2
+uint64 gcd(uint64 a, uint64 b) // B2
+{
+	while(b!=0)
+	{
+		uint64 temp = a;
+		a = b;
+		b = temp % b;
+	}
+	return a;
+
+}
 long long extended_gcd(long long a, long long b,
-	long long& s, long long& t); // B3
-uint64 mod_inverse(uint64 a, uint64 m); // B4
+	long long& s, long long& t) // B3
+{
+	stack<long long > quotients;
+	long long r0 = a , r1 = b;
+	while(r1 != 0)
+	{
+		quotients.push(r0/r1);
+
+		long long temp = r0;
+		r0 = r1;
+		r1 = temp % r1;
+	}
+	long long g = r0;
+	long long x =1, y =0 ;
+
+	while(!quotients.empty())
+	{
+		
+		long long temp = x;
+		x = y;
+		y = temp - quotients.top() * y;
+		quotients.pop();
+	}
+	
+	s = x; t = y;
+
+	return g;
+	
+}
+uint64 mod_inverse(uint64 a, uint64 m) // B4
+{
+	long long s, t;
+	if(extended_gcd(a, m, s, t) != 1) throw invalid_argument("No inverse");
+
+	long long r = s % (long long)m;
+	if (r < 0) r += m;
+
+	return r;
+}
 bool is_prime(uint64 n) // B5
 {
 	// check for n>=0
@@ -52,10 +99,35 @@ bool is_prime(uint64 n) // B5
 	return true;
 }
 void generate_keys(uint64 p, uint64 q, uint64 e,
-	uint64& n, uint64& d); // B6
-uint64 encrypt(uint64 M, uint64 n, uint64 e); // B7
-uint64 decrypt(uint64 C, uint64 n, uint64 d); // B7
-int block_size(uint64 n); // B8
+	uint64& n, uint64& d) // B6
+{
+	// Note: You may assume p, q < 231, so p·q fits in 64 bits. impliment this shih
+
+// 	1. If p or q is not prime, throw std::invalid_argument.
+	if(!is_prime(p) || !is_prime(q)) throw invalid_argument("p and q must be prime\n");
+// 2. If p == q, throw std::invalid_argument.
+	if(p == q) throw invalid_argument("p and q must not be equal\n");
+// 3. Let φ = (p − 1)(q − 1). If e ≤ 1, e ≥ φ, or gcd(e, φ) ≠ 1, throw std::invalid_argument.
+	uint64 φ = (p - 1)*(q - 1);
+	if(e <= 1 || e>= φ || gcd(e,φ) != 1) throw invalid_argument("e or gcd are not in range\n");
+// 4. Set n = p·q and d = mod_inverse(e, φ).
+	n = p * q;
+	d = mod_inverse(e, φ);
+}
+uint64 encrypt(uint64 M, uint64 n, uint64 e) // B7
+{
+	// encrypt returns M^e mod n 
+	return mod_exp(M,e,n);
+}
+uint64 decrypt(uint64 C, uint64 n, uint64 d) // B7
+{
+	// decrypt returns C^d mod n,
+	return mod_exp(C,d,n);
+}
+int block_size(uint64 n) // B8
+{
+	
+}
 
 std::string encrypt_text(const std::string& text, uint64 n, uint64 e); // B8
 std::string decrypt_text(const std::string& blocks, uint64 n, uint64 d); // B8
