@@ -148,7 +148,7 @@ Modular arithmetic · Fast exponentiation · Euclidean and extended Euclidean al
 ## Authors
 
 - [mubashirehsan10-bit](https://github.com/mubashirehsan10-bit)
-- [ahmad777x86](https://github.com/ahmad777x86) (original repository)
+- [ahmad777x86](https://github.com/ahmad777x86) 
 
 ## License
 
