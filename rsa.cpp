@@ -1,3 +1,4 @@
+#include <iostream>
 #include "rsa.h"
 using namespace std;
 
@@ -116,18 +117,61 @@ void generate_keys(uint64 p, uint64 q, uint64 e,
 }
 uint64 encrypt(uint64 M, uint64 n, uint64 e) // B7
 {
+	if(M >= n) throw invalid_argument("M exceeded n\n");
 	// encrypt returns M^e mod n 
 	return mod_exp(M,e,n);
 }
 uint64 decrypt(uint64 C, uint64 n, uint64 d) // B7
 {
+	if(C >= n) throw invalid_argument("C exceeded n\n");
+
 	// decrypt returns C^d mod n,
 	return mod_exp(C,d,n);
 }
 int block_size(uint64 n) // B8
 {
-	
+	uint64 z = 25;
+	uint64 k = 0;
+	for (int i = 1; z < n ; i++)
+	{
+		/* code */
+		k++;
+		z = z*100+25;
+	}
+	if (k > 9) throw invalid_argument("K exceeds 9\n");
+	return k;
 }
 
-std::string encrypt_text(const std::string& text, uint64 n, uint64 e); // B8
-std::string decrypt_text(const std::string& blocks, uint64 n, uint64 d); // B8
+std::string encrypt_text(const std::string& text, uint64 n, uint64 e) // B8
+{
+
+	uint64 k = block_size(n);
+
+	string cleaned = "";
+	for (int i = 0; text[i] != '\0'; i++)
+	{
+		/* code */
+		if(isalpha(text[i]))
+		{
+			cleaned += toupper(text[i]);
+		}
+	}
+
+	cout << "Cleaned: " << cleaned << endl;
+
+	while(text.size() % k != 0)
+	{
+		text + 'x';
+	}
+
+	
+
+
+
+
+
+}
+std::string decrypt_text(const std::string& blocks, uint64 n, uint64 d) // B8
+{
+	
+}
