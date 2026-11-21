@@ -9,12 +9,17 @@ int main()
 	assert(mul_mod(7, 8, 5) == 1);
 	assert(mul_mod(0, 99, 7) == 0);
 	assert(mul_mod(123456789012ULL, 987654321098ULL, 1000036000099ULL) ==
-		813538246183ULL);
+		   813538246183ULL);
 
 	//================Mod===============
 	assert(mod_exp(1819, 13, 2537) == 2081);
 	assert(mod_exp(5, 0, 7) == 1);
 	assert(mod_exp(2, 1000000000ULL, 1000000007ULL) == 140625001ULL);
+
+	//================GCD===============
+	assert(gcd(252, 198) == 18);
+	assert(gcd(13, 2436) == 1);
+	assert(gcd(17, 0) == 17);
 
 	//================extended gcd==================
 	// long long s, t;
@@ -26,6 +31,20 @@ int main()
 	assert(is_prime(2) && is_prime(2539) && is_prime(1000003));
 	assert(!is_prime(0) && !is_prime(1) && !is_prime(2537) && !is_prime(561));
 
+	//=======================Mod Inverse===============
+	// assert(mod_inverse(3, 7) == 5);
+	// assert(mod_inverse(101, 4620) == 1601);
+	// assert(mod_inverse(13, 2436) == 937);
+	// bool threw = false;
+	// try
+	// {
+	// 	mod_inverse(2, 6);
+	// }
+	// catch (const std::invalid_argument &)
+	// {
+	// 	threw = true;
+	// }
+	// assert(threw); // gcd(2, 6) = 2: no inverse
 	// //================= key genertation ==================
 	// uint64 n, d;
 	// generate_keys(43, 59, 13, n, d);
@@ -52,6 +71,6 @@ int main()
 
 	// //=======================Tests and demo program===============
 
-    cout << "Hello Wolrd 25\n";
-    return 0;
+	cout << "Hello World 25\n";
+	return 0;
 }
