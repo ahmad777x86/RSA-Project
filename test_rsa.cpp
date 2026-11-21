@@ -22,7 +22,7 @@ int main()
 	assert(gcd(17, 0) == 17);
 
 	//================extended gcd==================
-	
+
 	long long s, t;
 	long long g = extended_gcd(252, 198, s, t);
 	assert(g == 18 && s == 4 && t == -5); // 18 = 4*252 - 5*198
@@ -64,12 +64,12 @@ int main()
 	assert(decrypt(981, 2537, 937) == 704);
 	assert(decrypt(461, 2537, 937) == 1115);
 
-	// //=================encrypt_text and decrypt_text=============
-	// assert(encrypt_text("STOP", 2537, 13) == "2081 2182");
-	// assert(encrypt_text("Stop!", 2537, 13) == "2081 2182");
-	// assert(encrypt_text("abc", 2537, 13) == "0001 0027"); // padded to ABCX
-	// assert(decrypt_text("0981 0461", 2537, 937) == "HELP");
-	// assert(decrypt_text(encrypt_text("DISCRETE", 2537, 13), 2537, 937) == "DISCRETE");
+	//=================encrypt_text and decrypt_text=============
+	assert(encrypt_text("STOP", 2537, 13) == "2081 2182");
+	assert(encrypt_text("Stop!", 2537, 13) == "2081 2182");
+	assert(encrypt_text("abc", 2537, 13) == "0001 0027"); // padded to ABCX
+	assert(decrypt_text("0981 0461", 2537, 937) == "HELP");
+	assert(decrypt_text(encrypt_text("DISCRETE", 2537, 13), 2537, 937) == "DISCRETE");
 
 	// //=======================Tests and demo program===============
 

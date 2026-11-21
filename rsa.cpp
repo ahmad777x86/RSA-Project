@@ -158,7 +158,7 @@ std::string encrypt_text(const std::string &text, uint64 n, uint64 e) // B8
 
 	for (int i = 0; text[i] != '\0'; i++)
 	{
-		char ch = text[i];
+		unsigned char ch = text[i];
 		if (std::isalpha(ch))
 		{
 			temp += toupper(ch);
@@ -167,12 +167,13 @@ std::string encrypt_text(const std::string &text, uint64 n, uint64 e) // B8
 
 	cout << "Cleaned: " << temp << endl;
 
-	while (text.size() % k != 0)
+	while (temp.size() % k != 0)
 	{
 		temp += 'X';
 	}
 
 	string C;
+	string C_block;
 	uint64 M = 0;
 
 	for (int i = 0; i < temp.size(); i += k)
@@ -181,11 +182,17 @@ std::string encrypt_text(const std::string &text, uint64 n, uint64 e) // B8
 		{
 			M = M * 100 + (temp[i + j] - 'A');
 		}
-		cout << "M: " << M << endl;
-		C += to_string(encrypt(M, n, e));
+		C_block += to_string(encrypt(M, n, e));
+		while (C_block.size() < 2 * k)
+		{
+			C_block = '0' + C_block;
+		}
+		C += C_block;
+		C_block = "";
 		C += ' ';
 		M = 0;
 	}
+	C.pop_back();
 	return C;
 }
 std::string decrypt_text(const std::string &blocks, uint64 n, uint64 d) // B8
@@ -195,12 +202,13 @@ std::string decrypt_text(const std::string &blocks, uint64 n, uint64 d) // B8
 	string M;
 	uint64 message_num;
 	int dummy_index = 2;
-	for (int i = 0; i < blocks.size(); i++)
+	string Blocks = blocks;
+	Blocks += ' ';
+	for (int i = 0; i < Blocks.size(); i++)
 	{
-		c = blocks[i];
+		c = Blocks[i];
 		if (c == ' ')
 		{
-			cout << "C: " << num << endl;
 			message_num = decrypt(num, n, d);
 			stack<int> st;
 
@@ -214,7 +222,6 @@ std::string decrypt_text(const std::string &blocks, uint64 n, uint64 d) // B8
 				int n;
 				n = st.top();
 				n = n + 'A';
-				cout << "n: " << n << endl;
 				M += static_cast<char>(n);
 				st.pop();
 			}
