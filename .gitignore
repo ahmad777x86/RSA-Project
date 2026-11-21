@@ -2,7 +2,8 @@
 /.vscode
 test_rsa
 *.out
-
+demo
+*.out
 # CMake generated files
 CMakeFiles/
 CMakeCache.txt
