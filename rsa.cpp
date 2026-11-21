@@ -198,7 +198,7 @@ std::string encrypt_text(const std::string &text, uint64 n, uint64 e) // B8
 std::string decrypt_text(const std::string &blocks, uint64 n, uint64 d) // B8
 {
 	char c;
-	int num = 0;
+	uint64 num = 0;
 	string M;
 	uint64 message_num;
 	int dummy_index = 2;
