@@ -6,7 +6,8 @@ using namespace std;
 // add exceptions to all
 uint64 mul_mod(uint64 a, uint64 b, uint64 m) // B0
 {
-	// do the moduls defect coorection here
+	if (m == 0)
+		throw invalid_argument("modulus must not be zero");
 	a = a % m;
 	b = b % m;
 	uint64 result = 0;
@@ -21,6 +22,9 @@ uint64 mul_mod(uint64 a, uint64 b, uint64 m) // B0
 }
 uint64 mod_exp(uint64 b, uint64 n, uint64 m) // B1
 {
+	if (m == 0)
+		throw invalid_argument("modulus must not be zero");
+
 	// 1. Set x = 1 % m(so that m = 1 gives 0) and power = b % m.
 	uint64 x = 1 % m;
 	uint64 power = b % m;
@@ -78,6 +82,9 @@ long long extended_gcd(long long a, long long b,
 }
 uint64 mod_inverse(uint64 a, uint64 m) // B4
 {
+	if (m == 0)
+		throw invalid_argument("modulus must not be zero");
+
 	long long s, t;
 	if (extended_gcd(a, m, s, t) != 1)
 		throw invalid_argument("No inverse");
@@ -112,12 +119,14 @@ void generate_keys(uint64 p, uint64 q, uint64 e,
 	if (p == q)
 		throw invalid_argument("p and q must not be equal\n");
 	// 3. Let φ = (p − 1)(q − 1). If e ≤ 1, e ≥ φ, or gcd(e, φ) ≠ 1, throw std::invalid_argument.
-	uint64 φ = (p - 1) * (q - 1);
-	if (e <= 1 || e >= φ || gcd(e, φ) != 1)
+	uint64 phi = (p - 1) * (q - 1);
+	if (e <= 1 || e >= phi || gcd(e, phi) != 1)
 		throw invalid_argument("e or gcd are not in range\n");
 	// 4. Set n = p·q and d = mod_inverse(e, φ).
-	n = p * q;
-	d = mod_inverse(e, φ);
+	uint64 new_n = p * q;
+	uint64 new_d = mod_inverse(e, phi);
+	n = new_n;
+	d = new_d;
 }
 uint64 encrypt(uint64 M, uint64 n, uint64 e) // B7
 {
@@ -145,6 +154,8 @@ int block_size(uint64 n) // B8
 	}
 	if (k > 9)
 		throw invalid_argument("K exceeds 9\n");
+	if (k == 0)
+		throw invalid_argument("n is too small to hold even one letter");
 	return k;
 }
 
@@ -192,18 +203,23 @@ std::string encrypt_text(const std::string &text, uint64 n, uint64 e) // B8
 		C += ' ';
 		M = 0;
 	}
-	C.pop_back();
+	if (!C.empty())
+		C.pop_back();
 	return C;
 }
 std::string decrypt_text(const std::string &blocks, uint64 n, uint64 d) // B8
 {
 	char c;
 	uint64 num = 0;
-	string M;
+	string M = "";
 	uint64 message_num;
-	int dummy_index = 2;
+	int k = block_size(n);
 	string Blocks = blocks;
 	Blocks += ' ';
+
+	if (blocks.empty())
+		return M;
+
 	for (int i = 0; i < Blocks.size(); i++)
 	{
 		c = Blocks[i];
@@ -212,7 +228,7 @@ std::string decrypt_text(const std::string &blocks, uint64 n, uint64 d) // B8
 			message_num = decrypt(num, n, d);
 			stack<int> st;
 
-			for (int j = 0; j < i / dummy_index; j++)
+			for (int j = 0; j < k; j++)
 			{
 				st.push(message_num % 100);
 				message_num = message_num / 100;
@@ -226,7 +242,6 @@ std::string decrypt_text(const std::string &blocks, uint64 n, uint64 d) // B8
 				st.pop();
 			}
 			num = 0;
-			dummy_index += 2;
 		}
 		else
 		{

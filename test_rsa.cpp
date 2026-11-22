@@ -33,28 +33,58 @@ int main()
 	assert(is_prime(2) && is_prime(2539) && is_prime(1000003));
 	assert(!is_prime(0) && !is_prime(1) && !is_prime(2537) && !is_prime(561));
 
-	//=======================Mod Inverse===============
-	// assert(mod_inverse(3, 7) == 5);
-	// assert(mod_inverse(101, 4620) == 1601);
-	// assert(mod_inverse(13, 2436) == 937);
-	// bool threw = false;
-	// try
-	// {
-	// 	mod_inverse(2, 6);
-	// }
-	// catch (const std::invalid_argument &)
-	// {
-	// 	threw = true;
-	// }
-	// assert(threw); // gcd(2, 6) = 2: no inverse
+	// =======================Mod Inverse===============
+	assert(mod_inverse(3, 7) == 5);
+	assert(mod_inverse(101, 4620) == 1601);
+	assert(mod_inverse(13, 2436) == 937);
+	bool threw = false;
+	try
+	{
+		mod_inverse(2, 6);
+	}
+	catch (const invalid_argument &)
+	{
+		threw = true;
+	}
+	assert(threw); // gcd(2, 6) = 2: no inverse
+
 	// //================= key genertation ==================
 	uint64 n, d;
 	generate_keys(43, 59, 13, n, d);
 	assert(n == 2537 && d == 937);
 	// Each of these calls must throw std::invalid_argument:
-	// generate_keys(42, 59, 13, n, d); 	// 42 is not prime
-	// generate_keys(43, 43, 13, n, d); 	// p == q
-	// generate_keys(43, 59, 2, n, d); 	// gcd(2, 2436) = 2
+	bool threw_1 = false;
+	try
+	{
+		generate_keys(42, 59, 13, n, d); // 42 is not prime
+	}
+	catch (const invalid_argument &)
+	{
+		threw_1 = true;
+	}
+	assert(threw_1);
+	bool threw_2 = false;
+	try
+	{
+		generate_keys(43, 43, 13, n, d); // p == q
+	}
+	catch (const std::exception &e)
+	{
+		threw_2 = true;
+	}
+	assert(threw_2);
+
+	bool threw_3 = false;
+	try
+	{
+		generate_keys(43, 59, 2, n, d); // gcd(2, 2436) = 2
+	}
+	catch (const std::exception &e)
+	{
+		threw_3 = true;
+	}
+	assert(threw_3);
+
 	// Test each one with the same try/catch pattern as in B4.
 
 	// //======================encrypt and decrypt============
