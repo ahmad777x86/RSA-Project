@@ -3,7 +3,6 @@
 #include "rsa.h"
 using namespace std;
 
-// add exceptions to all
 uint64 mul_mod(uint64 a, uint64 b, uint64 m) // B0
 {
 	if (m == 0)
@@ -55,6 +54,7 @@ long long extended_gcd(long long a, long long b,
 {
 	stack<long long> quotients;
 	long long r0 = a, r1 = b;
+	// 	Step 1. Divide forward, run the Euclidean algorithm
 	while (r1 != 0)
 	{
 		quotients.push(r0 / r1);
@@ -66,6 +66,7 @@ long long extended_gcd(long long a, long long b,
 	long long g = r0;
 	long long x = 1, y = 0;
 
+	// Step 2. Substitute backward, replace (x, y) by (y, x − q·y) for each quotient
 	while (!quotients.empty())
 	{
 
@@ -110,8 +111,6 @@ bool is_prime(uint64 n) // B5
 void generate_keys(uint64 p, uint64 q, uint64 e,
 				   uint64 &n, uint64 &d) // B6
 {
-	// Note: You may assume p, q < 231, so p·q fits in 64 bits. impliment this shih
-
 	// 	1. If p or q is not prime, throw std::invalid_argument.
 	if (!is_prime(p) || !is_prime(q))
 		throw invalid_argument("p and q must be prime\n");
@@ -167,6 +166,7 @@ std::string encrypt_text(const std::string &text, uint64 n, uint64 e) // B8
 	cout << "Message: " << text << endl;
 	string temp = "";
 
+	// cleaning
 	for (int i = 0; text[i] != '\0'; i++)
 	{
 		unsigned char ch = text[i];
@@ -178,6 +178,7 @@ std::string encrypt_text(const std::string &text, uint64 n, uint64 e) // B8
 
 	cout << "Cleaned: " << temp << endl;
 
+	// padding for multiple of k
 	while (temp.size() % k != 0)
 	{
 		temp += 'X';
@@ -187,6 +188,7 @@ std::string encrypt_text(const std::string &text, uint64 n, uint64 e) // B8
 	string C_block;
 	uint64 M = 0;
 
+	// sliding window
 	for (int i = 0; i < temp.size(); i += k)
 	{
 		for (int j = 0; j < k; j++)
@@ -203,6 +205,7 @@ std::string encrypt_text(const std::string &text, uint64 n, uint64 e) // B8
 		C += ' ';
 		M = 0;
 	}
+	// empty string case
 	if (!C.empty())
 		C.pop_back();
 	return C;
@@ -217,6 +220,7 @@ std::string decrypt_text(const std::string &blocks, uint64 n, uint64 d) // B8
 	string Blocks = blocks;
 	Blocks += ' ';
 
+	// empty string case
 	if (blocks.empty())
 		return M;
 
@@ -233,6 +237,7 @@ std::string decrypt_text(const std::string &blocks, uint64 n, uint64 d) // B8
 				st.push(message_num % 100);
 				message_num = message_num / 100;
 			}
+			// turning number to ascii, then converting to the corresponding character
 			while (!st.empty())
 			{
 				int n;
